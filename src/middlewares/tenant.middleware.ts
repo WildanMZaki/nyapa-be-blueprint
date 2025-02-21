@@ -8,7 +8,6 @@ export class TenantMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     const tenantDbUrl = req.headers['x-tenant-db'] as string;
-
     if (!tenantDbUrl) {
       return res.status(400).json({ error: 'Tenant Database URL is required' });
     }
@@ -18,7 +17,7 @@ export class TenantMiddleware implements NestMiddleware {
       TenantMiddleware.connections.set(tenantDbUrl, connection);
     }
 
-    req['tenantConnection'] = TenantMiddleware.connections.get(tenantDbUrl);
+    req.tenantConnection = TenantMiddleware.connections.get(tenantDbUrl);
     next();
   }
 }
