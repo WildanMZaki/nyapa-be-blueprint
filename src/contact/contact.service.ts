@@ -1,21 +1,12 @@
-import { Injectable, Inject, Scope } from '@nestjs/common';
-import { Connection, Model } from 'mongoose';
-import { Contact, ContactSchema } from '../schemas/contact.schema';
-import { REQUEST } from '@nestjs/core';
-import { Request } from 'express';
+import { Injectable, Inject } from '@nestjs/common';
+import { ContactModel } from '../schemas/contact.schema';
+import { NotFoundError } from 'src/utils/errors';
 
-@Injectable({ scope: Scope.REQUEST }) // 👈 Make this service request-scoped
+@Injectable()
 export class ContactService {
-  private contactModel: Model<Contact>;
-
-  constructor(@Inject(REQUEST) private readonly req: Request) {
-    const connection = req['tenantConnection'] as Connection;
-
-    if (!connection) {
-      throw new Error('Tenant connection not found in request');
-    }
-    this.contactModel = connection.model<Contact>('Contact', ContactSchema);
-  }
+  constructor(
+    @Inject('CONTACT_MODEL') private readonly contactModel: ContactModel,
+  ) {}
 
   async createContact(data: any) {
     return await new this.contactModel(data).save();
@@ -23,5 +14,13 @@ export class ContactService {
 
   async getContacts() {
     return await this.contactModel.find();
+  }
+
+  async getContactById(id: string) {
+    const contact = await this.contactModel.findById(id);
+    if (!contact) {
+      throw new NotFoundError(`Contact with ID ${id} not found`);
+    }
+    return contact;
   }
 }
