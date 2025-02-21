@@ -1,5 +1,5 @@
 import { Injectable, Inject, Scope } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Connection, Model } from 'mongoose';
 import { Contact, ContactSchema } from '../schemas/contact.schema';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
@@ -9,14 +9,12 @@ export class ContactService {
   private contactModel: Model<Contact>;
 
   constructor(@Inject(REQUEST) private readonly req: Request) {
-    // 👈 Inject request manually
-    if (!req['tenantConnection']) {
+    const connection = req['tenantConnection'] as Connection;
+
+    if (!connection) {
       throw new Error('Tenant connection not found in request');
     }
-    this.contactModel = req['tenantConnection'].model<Contact>(
-      'Contact',
-      ContactSchema,
-    );
+    this.contactModel = connection.model<Contact>('Contact', ContactSchema);
   }
 
   async createContact(data: any) {

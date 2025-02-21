@@ -1,18 +1,17 @@
-import { Controller, Get, Post, Body, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { ContactService } from './contact.service';
-import { Request } from 'express';
 
 @Controller('contacts')
 export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
   @Post()
-  async createContact(@Body() body: any, @Req() req: Request) {
+  async createContact(@Body() body: any) {
     return this.contactService.createContact(body);
   }
 
   @Get()
-  async getContacts(@Req() req: Request) {
+  async getContacts() {
     return this.contactService.getContacts();
   }
 }
