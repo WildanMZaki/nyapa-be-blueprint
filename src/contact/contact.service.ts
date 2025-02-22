@@ -1,11 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ContactModel } from '../schemas/contact.schema';
+import { Contact, ContactModel } from '../schemas/contact.schema';
 import { NotFoundError } from 'src/utils/errors';
 
 @Injectable()
 export class ContactService {
   constructor(
-    @Inject('CONTACT_MODEL') private readonly contactModel: ContactModel,
+    @Inject(Contact.name) private readonly contactModel: ContactModel,
   ) {}
 
   async createContact(data: any) {

@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { Connection, Document, Model, Schema } from 'mongoose';
+import { Connection, Model, Schema } from 'mongoose';
 import { Contact, ContactSchema } from 'src/schemas/contact.schema';
 import { TenantService } from 'src/tenant/tenant.service';
 
@@ -13,10 +13,8 @@ export function createModelProvider<T>(
   name: string,
   schema: Schema<T>,
 ): ModelProvider<T> {
-  const prefix: string = '';
-  const suffix: string = '_MODEL';
   return {
-    provide: prefix + name.toUpperCase() + suffix,
+    provide: name,
     useFactory: (tenantService: TenantService): Model<T> => {
       const connection: Connection = tenantService.getConnection();
       return connection.model<T>(name, schema);
@@ -26,8 +24,8 @@ export function createModelProvider<T>(
 }
 
 export const ContactModelProvider = createModelProvider<Contact>(
-  'Contact',
+  Contact.name,
   ContactSchema,
 );
 
-export const models: Array<ModelProvider<Document>> = [ContactModelProvider];
+export const models: Array<ModelProvider<any>> = [ContactModelProvider];
