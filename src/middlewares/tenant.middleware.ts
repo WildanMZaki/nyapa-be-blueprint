@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware, Scope } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { Connection, createConnection } from 'mongoose';
-import { BadRequestError } from 'src/utils/errors';
+import { BadRequestError } from '../utils/errors';
 
 @Injectable({ scope: Scope.REQUEST })
 export class TenantMiddleware implements NestMiddleware {

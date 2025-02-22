@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Contact, ContactModel } from '../schemas/contact.schema';
-import { NotFoundError } from 'src/utils/errors';
+import { NotFoundError } from '../utils/errors';
 
 @Injectable()
 export class ContactService {
